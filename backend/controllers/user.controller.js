@@ -1,4 +1,4 @@
-import { User } from "../models/user.model";
+import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -167,7 +167,7 @@ export const updateProfile = async (req, res) => {
       user,
       success: true,
     });
-    
+
   } catch (error) {
     return res.status(404).json({
       message: `Something went wrong! ${error}`,
