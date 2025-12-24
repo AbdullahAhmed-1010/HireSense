@@ -3,6 +3,7 @@ import mongoose from "mongoose"
 const companySchema = new mongoose.Schema({
     name: {
         type: String,
+        unique: true,
         required: true
     },
     description: {
@@ -15,6 +16,7 @@ const companySchema = new mongoose.Schema({
     },
     website: {
         type: String,
+        unique: true,
         required: true
     },
     logo: {
