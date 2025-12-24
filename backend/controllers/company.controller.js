@@ -110,6 +110,9 @@ export const updateCompany = async (req, res) => {
             success: true
         })
     } catch (error){
-        
+        return res.status(404).json({
+            message: `Something went wrong! ${error}`,
+            success: false
+        })
     }
 }
