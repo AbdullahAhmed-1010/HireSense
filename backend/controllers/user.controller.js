@@ -95,6 +95,7 @@ export const login = async (req, res) => {
       })
       .json({
         message: `Welcome back ${user.fullname}`,
+        user,
         success: true,
       });
   } catch (error) {
@@ -123,15 +124,18 @@ export const updateProfile = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, bio, skills, gender } = req.body;
     const file = req.file;
-    if (!fullname || !email || !phoneNumber || !bio || !skills || !gender) {
-      return res.status(400).json({
-        message: "Please provide valid informations!",
-        success: false,
-      });
-    }
+    // if (!fullname || !email || !phoneNumber || !bio || !skills || !gender) {
+    //   return res.status(400).json({
+    //     message: "Please provide valid informations!",
+    //     success: false,
+    //   });
+    // }
     //cloudinary
 
-    const skillsArray = skills.split(",");
+    let skillsArray
+    if(skills){
+      skillsArray = skills.split(",");
+    }
 
     const userId = req.id; //from middleware authentication
 
@@ -143,12 +147,12 @@ export const updateProfile = async (req, res) => {
       });
     }
 
-    (user.fullname = fullname),
-      (user.email = email),
-      (user.phoneNumber = phoneNumber),
-      (user.profile.bio = bio),
-      (user.profile.skills = skillsArray),
-      (user.profile.gender = gender);
+    if (fullname) user.fullname = fullname
+    if (email) user.email = email
+    if (phoneNumber) user.phoneNumber = phoneNumber
+    if (bio) user.profile.bio = bio
+    if (skills) user.profile.skills = skillsArray
+    if (gender) user.profile.gender = gender
     //resume and pfp
 
     await user.save();
