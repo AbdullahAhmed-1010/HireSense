@@ -1,15 +1,16 @@
 import React from 'react'
 import Navbar from './shared/Navbar.jsx'
 import HeroSection from './HeroSection.jsx'
+import Category from './Category.jsx'
 
 const Home = () => {
   return (
     <div>
         <Navbar/>
         <HeroSection/>
-        {/* <Category/>
+        <Category/>
         <LatestJobs/>
-        <Footer/> */}
+        {/* <Footer/> */}
     </div>
   )
 }
