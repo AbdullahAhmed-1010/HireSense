@@ -3,6 +3,7 @@ import Navbar from './shared/Navbar.jsx'
 import HeroSection from './HeroSection.jsx'
 import Category from './Category.jsx'
 import LatestJobs from './LatestJobs.jsx'
+import Footer from './shared/Footer.jsx'
 
 const Home = () => {
   return (
@@ -11,7 +12,7 @@ const Home = () => {
         <HeroSection/>
         <Category/>
         <LatestJobs/>
-        {/* <Footer/> */}
+        <Footer/>
     </div>
   )
 }
