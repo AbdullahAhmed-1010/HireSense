@@ -4,14 +4,19 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Contact, Mail, Pen } from "lucide-react";
 import { Badge } from "./ui/badge";
+import { Label } from "./ui/label";
+import AppliedJobs from "./AppliedJobs";
 
 const skills = ["JavaScript", "React", "Python", "MongoDB", "ExpressJS", "Node"]
 
 const Profile = () => {
+
+  const isResume = true
+
   return (
     <div>
       <Navbar />
-      <div className="max-w-7xl mx-auto p-8 bg-white border border-gray-100 rounded-2xl my-5">
+      <div className="max-w-4xl mx-auto p-8 bg-white border border-gray-100 rounded-2xl my-5">
         <div className="flex justify-between">
           <div className="flex items-center gap-6">
             <Avatar className="h-24 w-24">
@@ -42,12 +47,24 @@ const Profile = () => {
                 <span>+91 9000000000</span>
             </div>
         </div>
-        <div>
-            <h1>Skills</h1>
-            {
-                skills.map((item, index) => (<Badge key={index}>{item}</Badge>))
-            }
+        <div className="my-5">
+            <h1 className="font-bold text-md mb-1">Tech Stack</h1>
+            <div className="flex items-center gap-1">
+              {
+                skills.length !== 0 ? skills.map((item, index) => (<Badge key={index}>{item}</Badge>)) : (<span>Not Applicable!</span>)
+              }
+            </div>
         </div>
+        <div className="grid w-full max-w-sm items-center gap-1">
+          <Label className="text-md font-bold">Resume</Label>
+          {
+            isResume ? <a href="https://github.com" target="blank" className="font-semibold text-blue-500 w-full hover:underline cursor-pointer">Github</a> : (<span>Not Applicable!</span>)
+          }
+        </div>
+      </div>
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl">
+        <h1 className="font-bold text-lg my-5">Applied Jobs</h1>
+        <AppliedJobs/>
       </div>
     </div>
   );
