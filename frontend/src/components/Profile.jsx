@@ -2,18 +2,20 @@ import React, { useState } from "react";
 import Navbar from "./shared/Navbar";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
-import { Contact, Mail, Pen } from "lucide-react";
+import { Baby, Contact, Mail, Pen } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Label } from "./ui/label";
 import AppliedJobs from "./AppliedJobs";
 import UpdateProfile from "./UpdateProfile";
+import { useSelector } from "react-redux";
+import store from "@/redux/store";
 
-const skills = ["JavaScript", "React", "Python", "MongoDB", "ExpressJS", "Node"]
 const isResume = true
 
 const Profile = () => {
 
   const [open, setOpen] = useState(false)
+  const {user} = useSelector(store => store.auth)
   return (
     <div>
       <Navbar />
@@ -27,11 +29,8 @@ const Profile = () => {
               />
             </Avatar>
             <div>
-              <h1 className="font-medium text-xl mb-1">Username</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Pariatur, vero.
-              </p>
+              <h1 className="font-medium text-xl mb-1">{user?.fullname}</h1>
+              <p>{user?.profile?.bio}</p>
             </div>
           </div>
           <Button onClick={() => setOpen(true)} variant="outline" className="text-right">
@@ -41,25 +40,29 @@ const Profile = () => {
         <div>
             <div className="flex items-center gap-3 my-2 mt-4">
                 <Mail/>
-                <span>testuser@example.com</span>
+                <span>{user?.email}</span>
             </div>
             <div className="flex items-center gap-3 my-2">
                 <Contact/>
-                <span>+91 9000000000</span>
+                <span>{user?.phoneNumber}</span>
+            </div>
+            <div className="flex items-center gap-3 my-2">
+                <Baby/>
+                <span>{user?.gender || "Male"}</span>
             </div>
         </div>
         <div className="my-5">
             <h1 className="font-bold text-md mb-1">Tech Stack</h1>
             <div className="flex items-center gap-1">
               {
-                skills.length !== 0 ? skills.map((item, index) => (<Badge key={index}>{item}</Badge>)) : (<span>Not Applicable!</span>)
+                user?.profile?.skills.length !== 0 ? user?.profile?.skills.map((item, index) => (<Badge key={index}>{item}</Badge>)) : (<span>Not Applicable!</span>)
               }
             </div>
         </div>
         <div className="grid w-full max-w-sm items-center gap-1">
           <Label className="text-md font-bold">Resume</Label>
           {
-            isResume ? <a href="https://github.com" target="blank" className="font-semibold text-blue-500 w-full hover:underline cursor-pointer">Github</a> : (<span>Not Applicable!</span>)
+            isResume ? <a href={user?.profile?.resume} target="blank" className="font-semibold text-blue-500 w-full hover:underline cursor-pointer">resume.pdf</a> : (<span>Not Applicable!</span>)
           }
         </div>
       </div>

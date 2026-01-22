@@ -18,6 +18,7 @@ const UpdateProfile = ({open, setOpen}) => {
     fullname: user?.fullname,
     email: user?.email,
     phoneNumber: user?.phoneNumber,
+    gender: user?.gender,
     bio: user?.profile?.bio,
     skills: user?.profile?.skills?.map(skill=>skill),
     file: user?.profile?.resume
@@ -40,6 +41,7 @@ const UpdateProfile = ({open, setOpen}) => {
     formData.append("fullname", input.fullname)
     formData.append("email", input.email)
     formData.append("phoneNumber", input.phoneNumber)
+    formData.append("gender", input.gender)
     formData.append("bio", input.bio)
     formData.append("skills", input.skills)
     if (input.file){
@@ -72,15 +74,15 @@ const UpdateProfile = ({open, setOpen}) => {
                 <DialogHeader>
                     <DialogTitle>Update Profile</DialogTitle>
                 </DialogHeader>
-                <form action="" onSubmit={submitHandler}>
+                <form onSubmit={submitHandler}>
                     <div className='grid gap-4 py-4'>
                         <div className='grid grid-cols-4 items-center gap-4'>
                             <Label htmlFor="name" className="text-right">Name</Label>
                             <Input
                             id="name"
-                            name="name"
+                            name="fullname"
                             type="text"
-                            value={input.fullname}
+                            value={input.fullname || ""}
                             onChange={changeEventHandler}
                             className="col-span-3"
                             />
@@ -91,7 +93,7 @@ const UpdateProfile = ({open, setOpen}) => {
                             id="email"
                             name="email"
                             type="email"
-                            value={input.email}
+                            value={input.email || ""}
                             onChange={changeEventHandler}
                             className="col-span-3"
                             />
@@ -100,9 +102,20 @@ const UpdateProfile = ({open, setOpen}) => {
                             <Label htmlFor="number" className="text-right">Phone Number</Label>
                             <Input
                             id="number"
-                            name="number"
+                            name="phoneNumber"
                             type="number"
-                            value={input.phoneNumber}
+                            value={input.phoneNumber || ""}
+                            onChange={changeEventHandler}
+                            className="col-span-3"
+                            />
+                        </div>
+                        <div className='grid grid-cols-4 items-center gap-4'>
+                            <Label htmlFor="gender" className="text-right">Gender</Label>
+                            <Input
+                            id="gender"
+                            name="gender"
+                            type="text"
+                            value={input.gender}
                             onChange={changeEventHandler}
                             className="col-span-3"
                             />
@@ -134,7 +147,6 @@ const UpdateProfile = ({open, setOpen}) => {
                             id="file"
                             name="file"
                             type="file"
-                            // value={input.file}
                             onChange={changeFileHandler}
                             accept="application/pdf"
                             className="col-span-3 cursor-pointer"
