@@ -62,7 +62,7 @@ const Profile = () => {
         <div className="grid w-full max-w-sm items-center gap-1">
           <Label className="text-md font-bold">Resume</Label>
           {
-            isResume ? <a href={user?.profile?.resume} target="blank" className="font-semibold text-blue-500 w-full hover:underline cursor-pointer">resume.pdf</a> : (<span>Not Applicable!</span>)
+            isResume ? <a href={user?.profile?.resume} target="blank" className="font-semibold text-blue-500 w-full hover:underline cursor-pointer">{user?.profile?.resumeOriginalName}</a> : (<span>Not Applicable!</span>)
           }
         </div>
       </div>
