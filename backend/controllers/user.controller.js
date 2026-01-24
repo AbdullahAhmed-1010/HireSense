@@ -6,49 +6,48 @@ import cloudinary from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
   try {
-    const { fullname, email, phoneNumber, password, role } = req.body;
-        
+    const { fullname, email, phoneNumber, password, role } = req.body
+
     if (!fullname || !email || !phoneNumber || !password || !role) {
-      return res.status(400).json({
-        message: "Please provide valid informations!",
-        success: false,
-      });
+      return res.status(400).json({ success: false, message: "Invalid data" })
     }
-    const file = req.file
-    const fileURI = getDataUri(file)
-    const cloudResponse = await cloudinary.uploader.upload(fileURI.content)
 
-    const user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({
-        message: "User already exists!",
-        success: false,
-      });
+    const exists = await User.findOne({ email })
+    if (exists) {
+      return res.status(400).json({ success: false, message: "User exists" })
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({
+    let profilePicture = ""
+    if (req.file) {
+      const fileURI = getDataUri(req.file)
+      const cloudResponse = await cloudinary.uploader.upload(
+        fileURI.content,
+        { folder: "avatars" }
+      )
+      profilePicture = cloudResponse.secure_url
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    const user = await User.create({
       fullname,
       email,
       phoneNumber,
       password: hashedPassword,
       role,
-      profile:{
-        profilePicture: cloudResponse.secure_url
-      }
-    });
-
+      profile: { profilePicture }
+    })
     return res.status(201).json({
-      message: "Account created successfully!",
       success: true,
-    });
+      user
+    })
   } catch (error) {
-    return res.status(404).json({
-      message: `Something went wrong! ${error}`,
+    return res.status(500).json({
       success: false,
-    });
+      message: error.message
+    })
   }
-};
+}
 
 export const login = async (req, res) => {
   try {

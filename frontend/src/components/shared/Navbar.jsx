@@ -64,9 +64,9 @@ const Navbar = () => {
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="font-medium">Test User</h3>
+                    <h3 className="font-medium">{user?.fullname}</h3>
                     <p className="text-muted-foreground">
-                      Lorem ipsum dolor sit amet.
+                      {user?.profile?.bio}
                     </p>
                   </div>
                 </div>
