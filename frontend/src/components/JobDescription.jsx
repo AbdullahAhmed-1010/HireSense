@@ -1,22 +1,69 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "@/utils/constants";
+import { setSingleJob } from "@/redux/jobSlice";
+import { useDispatch, useSelector } from "react-redux";
+import store from "@/redux/store";
+import { toast } from "sonner";
 
 const JobDescription = () => {
 
-  const isApplied = false
+  const params = useParams()
+  const jobId = params.id
+  const { singleJob } = useSelector(store => store.job)
+  const { user } = useSelector(store => store.auth)
+  const isInitiallyApplied = singleJob?.applications?.some(application => application.applicant === user?._id) || false
+  const [isApplied, setIsApplied] = useState(isInitiallyApplied) 
+
+  const dispatch = useDispatch()
+
+  const applyJob = async () => {
+    try {
+      const res = await axios.get(`${APPLICATION_API_END_POINT}/apply/${jobId}`, {withCredentials: true})
+      console.log(res.data)
+      if (res.data.success){
+        setIsApplied(true)
+        const updateSingleJob = {...singleJob, applications: [...singleJob.applications, {applicant: user?._id}]}
+        dispatch(setSingleJob(updateSingleJob))
+        toast.success(res.data.message)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.response.data.message)
+    }
+  }
+
+  useEffect(() => {
+    const fetchSingleJob = async () => {
+        try {
+            const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {withCredentials: true})
+            if (res.data.success){
+                dispatch(setSingleJob(res.data.job))
+                setIsApplied(res.data.job.applications.some(application => application.applicant === user?._id))
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    fetchSingleJob()
+  },[jobId, dispatch, user?._id])
+
   return (
     <div className="max-w-7xl mx-auto my-10">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-bold text-xl">Fullstack Developer</h1>
+          <h1 className="font-bold text-xl">{singleJob?.title}</h1>
           <div className="flex items-center gap-2 mt-4">
-            <Badge className="text-blue-700 font-bold" variant="ghost">8 Positions</Badge>
-            <Badge className="text-[#F83002] font-bold" variant="ghost">Part Time</Badge>
-            <Badge className="text-[#7209B7] font-bold" variant="ghost">24LPA</Badge>
+            <Badge className="text-blue-700 font-bold" variant="ghost">{singleJob?.position} Positions</Badge>
+            <Badge className="text-[#F83002] font-bold" variant="ghost">{singleJob?.jobType}</Badge>
+            <Badge className="text-[#7209B7] font-bold" variant="ghost">{singleJob?.salary}LPA</Badge>
           </div>
         </div>
-        <Button 
+        <Button
+            onClick={isApplied ? null : applyJob}
             disabled={isApplied} 
             className={`rounded-lg ${isApplied ? "bg-gray-600 cursor-not-allowed" : "bg-[#7209B7] hover:bg-[#5f32ad]"}`}>
             {isApplied ? "Applied" : "Apply Now"}
@@ -24,13 +71,13 @@ const JobDescription = () => {
       </div>
       <h1 className="border-b-2 border-b-gray-300 font-medium py-4">Job Description</h1>
       <div className="my-4">
-        <h1 className="font-bold my-1">Job Role: <span className="font-normal text-gray-800 pl-2">Fullstack Developer</span></h1>
-        <h1 className="font-bold my-1">Location: <span className="font-normal text-gray-800 pl-2">Bangalore</span></h1>
-        <h1 className="font-bold my-1">Description: <span className="font-normal text-gray-800 pl-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur praesentium veritatis porro!</span></h1>
-        <h1 className="font-bold my-1">Salary: <span className="font-normal text-gray-800 pl-2">12LPA</span></h1>
-        <h1 className="font-bold my-1">Experience: <span className="font-normal text-gray-800 pl-2">2y</span></h1>
-        <h1 className="font-bold my-1">Total Applicants: <span className="font-normal text-gray-800 pl-2">100</span></h1>
-        <h1 className="font-bold my-1">Posted Date: <span className="font-normal text-gray-800 pl-2">21-01-2026</span></h1>
+        <h1 className="font-bold my-1">Job Role: <span className="font-normal text-gray-800 pl-2">{singleJob?.title}</span></h1>
+        <h1 className="font-bold my-1">Location: <span className="font-normal text-gray-800 pl-2">{singleJob?.location}</span></h1>
+        <h1 className="font-bold my-1">Description: <span className="font-normal text-gray-800 pl-2">{singleJob?.description}</span></h1>
+        <h1 className="font-bold my-1">Salary: <span className="font-normal text-gray-800 pl-2">{singleJob?.salary}LPA</span></h1>
+        <h1 className="font-bold my-1">Experience: <span className="font-normal text-gray-800 pl-2">{singleJob?.experience}y</span></h1>
+        <h1 className="font-bold my-1">Total Applicants: <span className="font-normal text-gray-800 pl-2">{singleJob?.applications?.length}</span></h1>
+        <h1 className="font-bold my-1">Posted Date: <span className="font-normal text-gray-800 pl-2">{singleJob?.createdAt.split("T")[0]}</span></h1>
       </div>
     </div>
   )
