@@ -15,7 +15,7 @@ const JobDescription = () => {
   const jobId = params.id
   const { singleJob } = useSelector(store => store.job)
   const { user } = useSelector(store => store.auth)
-  const isInitiallyApplied = singleJob?.applications?.some(application => application.applicant === user?._id) || false
+  const isInitiallyApplied = singleJob?.applications?.some(application => application.applicant.toString() === user?._id.toString()) || false
   const [isApplied, setIsApplied] = useState(isInitiallyApplied) 
 
   const dispatch = useDispatch()
@@ -42,7 +42,7 @@ const JobDescription = () => {
             const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`, {withCredentials: true})
             if (res.data.success){
                 dispatch(setSingleJob(res.data.job))
-                setIsApplied(res.data.job.applications.some(application => application.applicant === user?._id))
+                setIsApplied(res.data.job.applications.some(application => application.applicant.toString() === user?._id.toString()))
             }
         } catch (error) {
             console.log(error);
