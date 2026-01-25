@@ -1,12 +1,13 @@
 import express from "express"
 import authentication from "../middlewares/authentication.js"
 import { getCompany, getCompanyById, registerCompany, updateCompany } from "../controllers/company.controller.js"
+import {singleUpload} from "../middlewares/multer.js"
 
 const router = express.Router()
 
 router.route("/register").post(authentication, registerCompany)
 router.route("/get").get(authentication, getCompany)
 router.route("/get/:id").get(authentication, getCompanyById)
-router.route("/update/:id").put(authentication, updateCompany)
+router.route("/update/:id").put(authentication, singleUpload, updateCompany)
 
 export default router
