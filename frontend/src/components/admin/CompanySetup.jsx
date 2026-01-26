@@ -10,12 +10,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { COMPANY_API_END_POINT } from "@/utils/constants";
 import { toast } from "sonner";
+import useGetCompanyById from "@/hooks/useGetCompanyById";
 
 const CompanySetup = () => {
+
+  const params = useParams();
+  useGetCompanyById(params?.id)
   const { company } = useSelector((store) => store.company);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const params = useParams();
 
   const [input, setInput] = useState({
     name: company?.name || "",
