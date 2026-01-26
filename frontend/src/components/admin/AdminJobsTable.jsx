@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "../ui/table";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Edit2, MoreHorizontal } from "lucide-react";
+import { Edit2, Eye, MoreHorizontal } from "lucide-react";
 import { useSelector } from "react-redux";
 import store from "@/redux/store";
 import { useNavigate } from "react-router-dom";
@@ -19,8 +19,6 @@ const AdminJobsTable = () => {
   const { adminJobs, searchJob } = useSelector(store => store.job)
   const [filterJob, setFilterJob] = useState([adminJobs])
   const navigate = useNavigate()
-  console.log("adminJobs:", adminJobs);
-  console.log("isArray:", Array.isArray(adminJobs));
 
   useEffect(() => {
     if (!Array.isArray(adminJobs)){
@@ -64,10 +62,14 @@ const AdminJobsTable = () => {
                   <PopoverTrigger>
                     <MoreHorizontal />
                   </PopoverTrigger>
-                  <PopoverContent className="w-25">
+                  <PopoverContent className="w-35">
                     <div onClick={() => navigate(`/admin/companies/${job?._id}`)} className="flex items-center gap-2 w-fit cursor-pointer">
                       <Edit2 className="w-5" />
                       <span className="font-semibold">Edit</span>
+                    </div>
+                    <div onClick={() => navigate(`/admin/jobs/${job?._id}/applicants`)} className="flex items-center w-fit gap-2 cursor-pointer mt-2">
+                        <Eye className="w-5"/>
+                        <span className="font-semibold">Applicants</span>
                     </div>
                   </PopoverContent>
                 </Popover>
