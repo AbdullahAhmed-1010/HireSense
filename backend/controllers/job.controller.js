@@ -91,28 +91,45 @@ export const getJobById = async (req, res) => {
     }
 }
 
+// export const getAdminJobs = async (req, res) => {
+//     try {
+//         const adminId = req.id
+//         const jobs = await Job.find({createdBy: adminId}).populate({
+//             path: "company",
+//             createdAt: -1
+//         })
+//         if (!jobs){
+//             return res.status(404).json({
+//                 message: "Jobs not found!",
+//                 success: false
+//             })
+//         }
+//         return res.status(200).json({
+//             jobs,
+//             success: true
+//         })
+//     } catch (error){
+//         return res.status(404).json({
+//             message: `Something went wrong! ${error}`,
+//             success: false
+//         })
+//     }
+// }
+
 export const getAdminJobs = async (req, res) => {
-    try {
-        const adminId = req.id
-        const jobs = await Job.find({createdBy: adminId}).populate({
-            path: "company"
-        }).populate({
-            path: "createdBy"
-        }).sort({createdAt: -1})
-        if (!jobs){
-            return res.status(404).json({
-                message: "Jobs not found!",
-                success: false
-            })
-        }
-        return res.status(200).json({
-            jobs,
-            success: true
-        })
-    } catch (error){
-        return res.status(404).json({
-            message: `Something went wrong! ${error}`,
-            success: false
-        })
-    }
+  try {
+    const jobs = await Job.find()
+      .populate("company")
+      .sort({ createdAt: -1 })
+
+    return res.status(200).json({
+      success: true,
+      jobs
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
 }
