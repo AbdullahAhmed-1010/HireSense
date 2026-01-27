@@ -91,30 +91,52 @@ export const getJobById = async (req, res) => {
     }
 }
 
-// export const getAdminJobs = async (req, res) => {
-//     try {
-//         const adminId = req.id
-//         const jobs = await Job.find({createdBy: adminId}).populate({
-//             path: "company",
-//             createdAt: -1
-//         })
-//         if (!jobs){
-//             return res.status(404).json({
-//                 message: "Jobs not found!",
-//                 success: false
-//             })
-//         }
-//         return res.status(200).json({
-//             jobs,
-//             success: true
-//         })
-//     } catch (error){
-//         return res.status(404).json({
-//             message: `Something went wrong! ${error}`,
-//             success: false
-//         })
-//     }
-// }
+export const updateJob = async (req, res) => {
+  try {
+    const jobId = req.params.id
+    const userId = req.id
+
+    const {title, description, requirements, salary, location, jobType, experience, position, companyId} = req.body
+
+    const job = await Job.findById(jobId)
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job not found!"
+      })
+    }
+
+    if (job.createdBy.toString() !== userId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to update this job!"
+      })
+    }
+
+    if (title) job.title = title
+    if (description) job.description = description
+    if (requirements) job.requirements = requirements.split(",")
+    if (salary) job.salary = Number(salary)
+    if (location) job.location = location
+    if (jobType) job.jobType = jobType
+    if (experience) job.experience = experience
+    if (position) job.position = position
+    if (companyId) job.company = companyId
+
+    await job.save()
+
+    return res.status(200).json({
+      success: true,
+      message: "Job updated successfully!",
+      job
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
 
 export const getAdminJobs = async (req, res) => {
   try {

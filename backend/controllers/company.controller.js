@@ -91,31 +91,41 @@ export const getCompanyById = async (req, res) => {
 }
 
 export const updateCompany = async (req, res) => {
-    try {
-        const { name, description, website, location } = req.body
-        const file = req.file
-        //cloudinary
-        const fileURI = getDataUri(file)
-        const cloudResponse = await cloudinary.uploader.upload(fileURI.content)
-        const logo = cloudResponse.secure_url
-
-        const updateData = { name, description, location, website, logo }
-        const company = await Company.findByIdAndUpdate(req.params.id, updateData, {new: true})
-        if(!company) {
-            return res.status(404).json({
-                message: "Company not found!",
-                success: false
-            })
-        }
-        return res.status(200).json({
-            message: "Company details updated!",
-            company,
-            success: true
-        })
-    } catch (error){
-        return res.status(404).json({
-            message: `Something went wrong! ${error}`,
-            success: false
-        })
+  try {
+    const { name, description, website, location } = req.body;
+    const company = await Company.findById(req.params.id);
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found!"
+      });
     }
+    if (name) company.name = name;
+    if (description) company.description = description;
+    if (location) company.location = location;
+    if (website) company.website = website;
+
+    if (req.file) {
+      const fileURI = getDataUri(req.file);
+
+      if (fileURI) {
+        const cloudResponse = await cloudinary.uploader.upload(
+          fileURI.content,
+          { folder: "company-logos" }
+        );
+        company.logo = cloudResponse.secure_url;
+      }
+    }
+    await company.save();
+    return res.status(200).json({
+      success: true,
+      message: "Company details updated!",
+      company
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
 }

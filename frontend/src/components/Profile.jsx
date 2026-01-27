@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "./shared/Navbar";
-import { Avatar, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Baby, Contact, Mail, Pen } from "lucide-react";
 import { Badge } from "./ui/badge";
@@ -26,9 +26,10 @@ const Profile = () => {
           <div className="flex items-center gap-6">
             <Avatar className="h-24 w-24">
               <AvatarImage
-                src="https://t4.ftcdn.net/jpg/04/45/30/57/360_F_445305728_wbc77En8amG4xBkj8A0OsQcWWpZk3zbT.jpg"
+                src={user?.profile?.profilePicture}
                 alt="profile"
               />
+              <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
               <h1 className="font-medium text-xl mb-1">{user?.fullname}</h1>

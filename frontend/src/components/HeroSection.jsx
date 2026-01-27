@@ -25,7 +25,7 @@ const HeroSection = () => {
           Search, Apply & <br /> Get Your{" "}
           <span className="text-[#6A38C2]">Dream Job!</span>
         </h1>
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facere officiis quidem, reiciendis nisi distinctio at.</p>
+        <p>Incorporate skills and keywords that employers are actually looking for. Surf through all the jobs and apply in your dream job!</p>
         <div className="flex w-[40%] shadow-lg border border-gray-300 pl-3 rounded-full items-center gap-4 mx-auto">
             <input 
             type="text" 

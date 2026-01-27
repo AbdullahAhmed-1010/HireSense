@@ -48,8 +48,8 @@ const CompaniesTable = () => {
           {filter?.map((company) => (
             <TableRow>
               <TableCell>
-                <Avatar>
-                  <AvatarImage className="w-fit" src={company?.logo} />
+                <Avatar className="h-8 w-8">
+                  <AvatarImage className="object-contain" src={company?.logo} />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </TableCell>

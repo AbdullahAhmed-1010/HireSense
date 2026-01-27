@@ -58,7 +58,7 @@ const CreateCompany = () => {
         <Navbar/>
         <div className='max-w-4xl mx-auto'>
             <div className='my-10'>
-                <h1 className='font-bold text-2xl'>Company Name</h1>
+                <h1 className='font-bold text-2xl'>Register a <span className='text-[#6A38C2]'>New Company</span></h1>
                 <p className='text-gray-500'>What would you like to name your company? <span>You can change this later!</span></p>
             </div>
             <div>
