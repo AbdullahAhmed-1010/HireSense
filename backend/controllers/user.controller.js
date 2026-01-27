@@ -131,58 +131,54 @@ export const logout = async (req, res) => {
 }
 
 export const updateProfile = async (req, res) => {
-  try {
-    const { fullname, email, phoneNumber, bio, skills, gender } = req.body
-    const userId = req.id
+    try {
+        const { fullname, email, phoneNumber, bio, gender, skills } = req.body;
+        
+        const file = req.file;
+        const fileUri = getDataUri(file);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
-    let user = await User.findById(userId)
-    if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" })
-    }
-
-    if (fullname) user.fullname = fullname
-    if (email) user.email = email
-    if (phoneNumber) user.phoneNumber = phoneNumber
-    if (bio) user.profile.bio = bio
-    if (gender) user.profile.gender = gender
-    if (skills) user.profile.skills = skills.split(",")
-
-    if (req.files?.avatar) {
-      const avatarUri = getDataUri(req.files.avatar[0])
-      const avatarUpload = await cloudinary.uploader.upload(
-        avatarUri.content,
-        {
-          folder: "avatars",
-          resource_type: "image"
+        let skillsArray;
+        if(skills){
+            skillsArray = skills.split(",");
         }
-      )
-      user.profile.profilePicture = avatarUpload.secure_url
-    }
+        const userId = req.id; // middleware authentication
+        let user = await User.findById(userId);
 
-    if (req.files?.resume) {
-      const resumeUri = getDataUri(req.files.resume[0])
-      const resumeUpload = await cloudinary.uploader.upload(
-        resumeUri.content,
-        {
-          folder: "resumes",
-          resource_type: "raw"
+        if (!user) {
+            return res.status(400).json({
+                message: "User not found.",
+                success: false
+            })
         }
-      )
-      user.profile.resume = resumeUpload.secure_url
-      user.profile.resumeOriginalName = req.files.resume[0].originalname
+        if(fullname) user.fullname = fullname
+        if(email) user.email = email
+        if(phoneNumber)  user.phoneNumber = phoneNumber
+        if(bio) user.profile.bio = bio
+        if(gender) user.profile.gender = gender
+        if(skills) user.profile.skills = skillsArray
+      
+        if(cloudResponse){
+            user.profile.resume = cloudResponse.secure_url // save the cloudinary url
+            user.profile.resumeOriginalName = file.originalname // Save the original file name
+        }
+        await user.save();
+
+        user = {
+            _id: user._id,
+            fullname: user.fullname,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            role: user.role,
+            profile: user.profile
+        }
+
+        return res.status(200).json({
+            message:"Profile updated successfully.",
+            user,
+            success:true
+        })
+    } catch (error) {
+        console.log(error);
     }
-
-    await user.save()
-    return res.status(200).json({
-      success: true,
-      message: "Profile updated successfully",
-      user
-    })
-
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message
-    })
-  }
 }

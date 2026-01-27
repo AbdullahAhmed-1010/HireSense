@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
     resume:{type: String}, //URL for resume file
     resumeOriginalName:{type: String},
     company:{type: mongoose.Schema.Types.ObjectId, ref: "Company"}, //relation between company schema and user schema
-    gender:{type: String, enum: ["male", "female", "others"]}
+    gender:{type: String, enum: ["male (he/him)", "female (she/her)", "others (they/them)"]}
   }
 }, {timestamps: true})
 

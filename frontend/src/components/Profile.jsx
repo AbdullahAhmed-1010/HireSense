@@ -51,7 +51,7 @@ const Profile = () => {
             </div>
             <div className="flex items-center gap-3 my-2">
                 <Baby/>
-                <span>{user?.gender || "Male"}</span>
+                <span>{user?.profile?.gender}</span>
             </div>
         </div>
         <div className="my-5">
